@@ -1,12 +1,15 @@
 # UBHackopoly2025
 
-## Project: "Bison Advisor"
+## Project: "Lost & Found App"
 ### Problem Statement
-Choosing the right classes and professors is a gamble. You have to juggle the official catalog, RateMyProffessor, and word-of-mouth
+Help students track and locate lost items
 ### Solution
-Scrape UB course catalog and public professor reviews (reddit, RateMyProfessor)
+A mobile app for users to:
+- upload lost items
+- search for lost items
+
 ### AI
-Use a simple AI model to let users ask natural language questions like" What pathways are easy?"
+AI will generate keywords from pictures that users upload to the app.
 
 The Stack:
 Scrape:
