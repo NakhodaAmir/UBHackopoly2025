@@ -158,13 +158,50 @@ H:S:A
 L1 atk	40	50	60 
 L1 def	60	50	40
 L2 atk	50	60	65	Use Charge
+   if status != charge:
+      charge
+   else:
+      attack
 L2 def	95	40	40	Use HEAL
+   if AP == max:
+      deffend
+   else:
+      attack
 L3 atk	50	80	70	Use Poison
+   if player != poison:
+      poison
+   else:
+      attack
 L3 def	70	50	80	Use Vulnerable
+   if player != vulnerable:
+      vulnerable
+   else:
+      attack
 L4 atk	55	70	100	Use Stun
+   if hp < 30:
+      defend
+   elif:
+      Stun every three turn
+   else:
+      attack
 L4 def	125	50	50	Use HEAL adn DEFEND
+   if hp > 80:
+      deffend
+   elif hp < 30:
+      heal
+   else:
+      attack
 L5 atk	70	80	100
+   if player != diffend:
+      charge
+      attack
+   else:
+      stun
 L5 def	110	70	70
+   if player have any stutus:
+      vulnerable
+   elif hp < 60
+      deffend
 
 STUN　On the next turn, the player will be unable to execute any of their three action slots.(able to counter)
 POISON Lasts for 3 turns. At the start of each turn, you take **5% of your maximum HP** in damage.
