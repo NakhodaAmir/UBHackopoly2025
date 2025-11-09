@@ -155,11 +155,16 @@ ISC
 
 ## Enemy info
 H:S:A
-1 : 50,50,50
-2: 75,50,50
-3:60,85,55
-4:60,60,105
-5:90,80,80
+L1 atk	40	50	60 
+L1 def	60	50	40
+L2 atk	50	60	65	Use Charge
+L2 def	95	40	40	Use HEAL
+L3 atk	50	80	70	Use Poison
+L3 def	70	50	80	Use Vulnerable
+L4 atk	55	70	100	Use Stun
+L4 def	125	50	50	Use HEAL adn DEFEND
+L5 atk	70	80	100
+L5 def	110	70	70
 
 STUN　On the next turn, the player will be unable to execute any of their three action slots.(able to counter)
 POISON Lasts for 3 turns. At the start of each turn, you take **5% of your maximum HP** in damage.
