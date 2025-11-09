@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Battle Screen Mockup</title>
+    <link rel="stylesheet" href="style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&family=Press+Start+2P&display=swap" rel="stylesheet">
+</head>
+<body>
+
+    <div class="battle-screen">
+        
+        <header class="battle-header">
+            <div class="stats-block" id="player-stats">
+                <h2>Player Hero</h2>
+                <p>HP: 70 / 100</p>
+                <div class="stat-bar"><div class="hp-bar"></div></div>
+                <p>AP: 6 / 6</p>
+                <div class="stat-bar"><div class="ap-bar"></div></div>
+                <p>ATK: 60</p>
+            </div>
+            
+            <div class="stats-block" id="enemy-stats">
+                <h2>Enemy AI</h2>
+                <p>HP: 85 / 120</p>
+                <div class="stat-bar"><div class="hp-bar enemy-hp"></div></div>
+                <p>AP: 4 / 6</p>
+                <div class="stat-bar"><div class="ap-bar enemy-ap"></div></div>
+                <p>ATK: 40</p>
+            </div>
+        </header>
+
+        <main class="battle-main">
+
+            <aside class="action-palette">
+                <button class="action-block"><span>⚔️</span> ATTACK (1)</button>
+                <button class="action-block"><span>⚡</span> CHARGE (1)</button>
+                <button class="action-block"><span>✚</span> HEAL (2)</button>
+                <button class="action-block"><span>🛡️</span> DEFEND (2)</button>
+                <button class="action-block"><span>🔄</span> COUNTER (1)</button>
+                <button class="action-block" style="background-color: #b3a400;"><span>IF</span></button>
+                <button class="action-block" style="background-color: #008a1a;"><span>FOR</span></button>
+            </aside>
+
+            <div class="center-area">
+                
+                <div class="character-area">
+                    <div class="character-sprite">[Player Sprite]</div>
+                    <div class="vs-graphic">VS</div>
+                    <div class="character-sprite">[Enemy Sprite]</div>
+                </div>
+
+                <div class="battle-log">
+                    <p>Turn 1: <span class="player-action">Player uses CHARGE. ATK UP (3 Turns).</span></p>
+                    <p>Turn 1: <span class="enemy-action">Enemy uses ATTACK. Player receives 15 damage.</span></p>
+                    <p>Turn 2: <span class="player-action">Player uses ATTACK. Enemy receives 30 damage.</span></p>
+                </div>
+
+                <div class="program-slots">
+                    <div class="slot">
+                        <h3>1st Action</h3>
+                        <div class="drop-zone">
+                            <div class="logic-block if-block">
+                                <span>IF [ HP < 40 ] THEN</span>
+                                <div class="logic-block heal-block"><span>✚</span> HEAL</div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="slot">
+                        <h3>2nd Action</h3>
+                        <div class="drop-zone">
+                            <div class="logic-block for-block">
+                                <span>FOR 2 TIMES</span>
+                                <div class="logic-block attack-block"><span>⚔️</span> ATTACK</div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="slot">
+                        <h3>3rd Action</h3>
+                        <div class="drop-zone">
+                            <div class="logic-block counter-block"><span>🔄</span> COUNTER</div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+
+            <aside class="info-sidebar">
+                <h3>Enemy Prediction</h3>
+                <p>Enemy AP: 4</p>
+                <p>Predicted Action: ATTACK or DEFEND</p>
+                <hr>
+                <h3>Player Buffs</h3>
+                <ul class="buff-list">
+                    <li>ATK UP (+10) - 2 Turns remaining</li>
+                </ul>
+            </aside>
+
+        </main>
+
+        <footer class="battle-footer">
+            <button class="execute-button" id="execute-turn">EXECUTE TURN</button>
+        </footer>
+
+    </div>
+
+</body>
+</html>

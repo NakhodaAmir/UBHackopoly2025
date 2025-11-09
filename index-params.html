@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Character Setup</title>
+    <link rel="stylesheet" href="style.css"> 
+</head>
+<body class="setup-body">
+
+    <div class="setup-screen">
+        
+        <h1>Strategy Setup</h1>
+        
+        <div class="point-counter">
+            <p>Remaining Free Points:</p>
+            <div class="remaining-points">50</div>
+        </div>
+
+        <p class="description">Default is 50. Please freely distribute the remaining 50 points among HP, Speed, and Attack. (Maximum 100)</p>
+
+        <div class="param-container">
+            
+            <div class="param-block">
+                <h2>HP  ✚</h2>
+                <div class="param-value-display">
+                    <span class="current-value" id="hp-value">50</span>
+                    <span class="max-value">/ 100</span>
+                </div>
+                <div class="controls">
+                    <button class="minus-btn" data-param="hp">-</button>
+                    <div class="slider-placeholder">[Slider Placeholder]</div>
+                    <button class="plus-btn" data-param="hp">+</button>
+                </div>
+            </div>
+
+            <div class="param-block">
+                <h2>Speed  💨</h2>
+                <div class="param-value-display">
+                    <span class="current-value" id="speed-value">50</span>
+                    <span class="max-value">/ 100</span>
+                </div>
+                <div class="controls">
+                    <button class="minus-btn" data-param="speed">-</button>
+                    <div class="slider-placeholder">[Slider Placeholder]</div>
+                    <button class="plus-btn" data-param="speed">+</button>
+                </div>
+            </div>
+
+            <div class="param-block">
+                <h2>Attack  ⚔️</h2>
+                <div class="param-value-display">
+                    <span class="current-value" id="attack-value">50</span>
+                    <span class="max-value">/ 100</span>
+                </div>
+                <div class="controls">
+                    <button class="minus-btn" data-param="attack">-</button>
+                    <div class="slider-placeholder">[Slider Placeholder]</div>
+                    <button class="plus-btn" data-param="attack">+</button>
+                </div>
+            </div>
+
+        </div>
+
+        <button class="start-button">Start Buttle</button>
+        <button class="reset-button">Resset</button>
+
+    </div>
+
+</body>
+</html>
