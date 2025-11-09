@@ -1,0 +1,22 @@
+{
+  "name": "ubhackopoly2025",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Bot programming battle game",
+  "workspaces": [
+    "packages/*"
+  ],
+  "scripts": {
+    "dev": "concurrently \"npm run dev:backend\" \"npm run dev:frontend\"",
+    "dev:frontend": "npm run dev --workspace=@ubhackopoly/frontend",
+    "dev:backend": "npm run dev --workspace=@ubhackopoly/backend",
+    "build": "npm run build --workspaces",
+    "clean": "npm run clean --workspaces"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "concurrently": "^8.2.2"
+  }
+}
