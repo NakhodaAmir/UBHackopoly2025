@@ -152,3 +152,30 @@ This is a hackathon project. Feel free to contribute!
 ## License
 
 ISC
+
+## Enemy info
+H:S:A
+1 : 50,50,50
+2: 75,50,50
+3:60,85,55
+4:60,60,105
+5:90,80,80
+
+STUN　On the next turn, the player will be unable to execute any of their three action slots.(able to counter)
+POISON Lasts for 3 turns. At the start of each turn, you take **5% of your maximum HP** in damage.
+VULNERBLE Lasts for 2 turns. All damage taken is doubled.
+
+## action
+
+ATTACK    1 AP    As the lowest-cost action, it serves as the default when AP is low or for rapid-fire attacks after CHARGE.
+
+CHARGE    1 AP    Keeping its cost minimal forces choices between ATTACK and COUNTER. Since AP recovery is +2, executing CHARGE doesn't reduce AP, making it easier to build IF statements for maintaining buffs.
+
+HEAL    2 AP        Its moderate cost forces players to choose between HEAL and other actions (e.g., two ATTACKs), demanding precise timing in IF statements for recovery.
+
+DEFEND    2 AP        Matching HEAL's cost forces a choice between **“recovery or defense”**. With no penalty, it becomes a very easy, safe choice when HP is critically low.
+
+COUNTER    1 AP    Despite the extreme high risk (failure: 20% of max HP damage), the AP cost is set low. This forces players to weigh “HP” rather than “AP” as the risk, demanding a more advanced strategy.
+
+
+CLEANSE　2 AP   Instantly removes all status ailments. Does not restore HP.
