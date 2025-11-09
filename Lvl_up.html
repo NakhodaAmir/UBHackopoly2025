@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Simple Cyber Flow</title>
+    <link rel="stylesheet" href="style2.css">
+</head>
+
+<body>
+
+    <div class="system-map-container">
+
+        <h1 class="map-title">STAGES</h1>
+
+        <div class="stage-flow">
+
+            <div class="node standard-node" style="top: 10%; left: 0%;">
+                <span class="node-label">NODE 01</span>
+                <span class="node-detail">Status OK</span>
+            </div>
+
+            <div class="node active-node" style="top: 67%; left: 33%;">
+                <span class="node-label">NODE 02</span>
+                <span class="node-detail">// ACTIVE //</span>
+            </div>
+
+            <div class="node final-node" style="top: 10%; left: 33%;">
+                <span class="node-label">NODE 03</span>
+                <span class="node-detail">Destination</span>
+            </div>
+
+            <div class="node warning-node" style="top: 67%; left: 65%;">
+                <span class="node-label">NODE 04</span>
+                <span class="node-detail">Processing...</span>
+            </div>
+            
+            <div class="node completed-node" style="top: 10%; left: 66%;">
+                <span class="node-label">NODE 05</span>
+                <span class="node-detail">Verification Done</span>
+            </div>
+            
+            <div class="path warning-path"
+                style="top: 65.5%; left: 72%; width: 180px; transform: rotate(270deg); transform-origin: top left;"></div>
+
+            <div class="path warning-path"
+                style="top: 33%; left: 45%; width: 300px; transform: rotate(45deg); transform-origin: top left;"></div>
+                
+            <div class="path standard-path"
+                style="top: 33%; left: 12%; width: 300px; transform: rotate(45deg); transform-origin: top left;"></div>
+
+            <div class="path active-path"
+                style="top: 65.5%; left: 40%; width: 180px; transform: rotate(270deg); transform-origin: top left;"></div>
+
+        </div>
+
+    </div>
+
+</body>
+
+</html>
