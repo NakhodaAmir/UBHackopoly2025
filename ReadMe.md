@@ -209,17 +209,19 @@ VULNERBLE Lasts for 2 turns. All damage taken is doubled.
 
 ## action
 
-ATTACK    1 AP    As the lowest-cost action, it serves as the default when AP is low or for rapid-fire attacks after CHARGE.
+ATTACK    2 AP   Deal damage (Attack value)
 
-CHARGE    1 AP    Keeping its cost minimal forces choices between ATTACK and COUNTER. Since AP recovery is +2, executing CHARGE doesn't reduce AP, making it easier to build IF statements for maintaining buffs.
+CHARGE    1 AP    For 3 turns, grants a buff that increases the next ATTACK damage by 20%.
 
-HEAL    2 AP        Its moderate cost forces players to choose between HEAL and other actions (e.g., two ATTACKs), demanding precise timing in IF statements for recovery.
+HEAL    4 AP        Restores 100 HP to yourself.
 
-DEFEND    2 AP        Matching HEAL's cost forces a choice between **“recovery or defense”**. With no penalty, it becomes a very easy, safe choice when HP is critically low.
+DEFEND    2 AP        Reduces enemy damage taken by 80%.
 
-COUNTER    1 AP    Despite the extreme high risk (failure: 20% of max HP damage), the AP cost is set low. This forces players to weigh “HP” rather than “AP” as the risk, demanding a more advanced strategy.
+COUNTER    3 AP    Success: Reflects 1.5 times the damage received. Failure: Takes 20% of maximum HP as damage.
+
+CLEANSE　4 AP   Instantly removes all status ailments. Does not restore HP.
 
 
-CLEANSE　2 AP   Instantly removes all status ailments. Does not restore HP.
 
-You can get 2 ap every single turn 
+You can get 4 ap every single turn 
+Start from 8 AP
