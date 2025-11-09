@@ -1,115 +1,432 @@
 <!DOCTYPE html>
 <html lang="ja">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Battle Screen Mockup</title>
-    <link rel="stylesheet" href="style.css">
-    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&family=Press+Start+2P&display=swap"
-        rel="stylesheet">
+    <title>Battle Screen (Working Demo)</title>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&family=Press+Start+2P&display=swap" rel="stylesheet">
+    
+    <style>
+        body { font-family: 'Roboto', sans-serif; background-color: #1a1a2e; color: #e0e0e0; margin: 0; padding: 20px; display: flex; justify-content: center; align-items: center; min-height: 100vh; }
+        .battle-screen { width: 95%; max-width: 1400px; border: 2px solid #00e5ff; border-radius: 15px; background-color: #1f2a40; box-shadow: 0 0 30px rgba(0, 229, 255, 0.4); overflow: hidden; display: flex; flex-direction: column; }
+        .battle-header { display: flex; justify-content: space-between; padding: 20px; background-color: rgba(0, 0, 0, 0.3); border-bottom: 1px solid #00e5ff; }
+        .stats-block { width: 30%; background: rgba(10, 20, 40, 0.5); padding: 15px; border-radius: 8px; }
+        .stats-block h2 { margin: 0 0 10px; color: #00e5ff; font-family: 'Press Start 2P', cursive; font-size: 16px; }
+        .stats-block p { margin: 5px 0; font-size: 14px; }
+        .stat-bar { width: 100%; background-color: #111; border-radius: 5px; overflow: hidden; height: 15px; border: 1px solid #555; }
+        .hp-bar { background-color: #d90000; height: 100%; transition: width 0.5s ease; }
+        .ap-bar { background-color: #007bff; height: 100%; transition: width 0.5s ease; }
+        .battle-main { display: flex; padding: 20px; gap: 20px; }
+        .action-palette { flex-basis: 15%; display: flex; flex-direction: column; gap: 10px; }
+        .action-block { padding: 15px 10px; font-size: 1em; font-weight: bold; background-color: #3b4b6b; border: 2px solid #5a6b8b; color: #fff; border-radius: 5px; cursor: move; text-align: left; display: flex; align-items: center; gap: 10px; transition: background-color 0.2s, border-color 0.2s, opacity 0.2s; }
+        .action-block:hover { background-color: #4c5d7e; border-color: #00e5ff; }
+        .action-block span { font-size: 1.2em; }
+        .action-if { background-color: #b3a400; }
+        .action-for { background-color: #008a1a; }
+        .dragging { opacity: 0.5; border-style: dashed; }
+        .center-area { flex-basis: 60%; display: flex; flex-direction: column; gap: 15px; }
+        .character-area { display: flex; justify-content: space-around; align-items: center; padding: 10px; background: rgba(0, 0, 0, 0.2); border-radius: 8px; }
+        .character-sprite { width: 100px; height: 100px; background-color: #334; border: 2px dashed #556; border-radius: 5px; display: flex; align-items: center; justify-content: center; font-style: italic; color: #889; }
+        .vs-graphic { font-size: 2.5em; font-weight: bold; color: #00e5ff; font-family: 'Press Start 2P', cursive; }
+        .battle-log { height: 120px; background-color: rgba(0, 0, 0, 0.5); border: 1px solid #445; border-radius: 5px; padding: 15px; overflow-y: auto; color: #ccc; }
+        .battle-log p { margin: 2px 0; }
+        .battle-log .player-action { color: #00e5ff; font-weight: bold; }
+        .battle-log .enemy-action { color: #ff4d4d; font-weight: bold; }
+        .battle-log .system-message { color: #b3a400; font-style: italic; }
+        .program-slots { display: flex; flex-direction: column; gap: 10px; }
+        .slot { background-color: rgba(0, 0, 0, 0.3); border: 1px solid #445; border-radius: 8px; padding: 15px; }
+        .slot h3 { margin: 0 0 10px; color: #aaa; }
+        .drop-zone { min-height: 70px; background-color: rgba(0, 0, 0, 0.4); border: 2px dashed #00e5ff; border-radius: 5px; padding: 10px; display: flex; flex-direction: column; gap: 5px; color: #777; font-style: italic; justify-content: center; align-items: center; transition: background-color 0.3s, border-color 0.3s; }
+        .drag-over { background-color: rgba(0, 229, 255, 0.2); border-color: #fff; }
+        .dropped-block { padding: 10px; border-radius: 5px; color: white; font-family: 'Courier New', Courier, monospace; font-weight: bold; display: flex; align-items: center; gap: 8px; font-style: normal; width: 90%; justify-content: center; }
+        .attack-block { background-color: #b32d00; }
+        .charge-block { background-color: #d97400; }
+        .heal-block { background-color: #006ddb; }
+        .defend-block { background-color: #005a8a; }
+        .counter-block { background-color: #8a00b3; }
+        .if-block { background-color: #b3a400; }
+        .for-block { background-color: #008a1a; }
+        .info-sidebar { flex-basis: 25%; padding: 15px; background-color: rgba(0, 0, 0, 0.3); border-radius: 8px; border: 1px solid #445; }
+        .info-sidebar h3 { margin: 0 0 10px; color: #00e5ff; font-family: 'Press Start 2P', cursive; font-size: 14px; }
+        .buff-list { list-style: none; padding: 0; }
+        .buff-list li { background: #3b4b6b; padding: 8px; border-radius: 4px; margin-bottom: 5px; }
+        .battle-footer { text-align: center; padding: 20px; background-color: rgba(0, 0, 0, 0.3); border-top: 1px solid #00e5ff; }
+        .execute-button { padding: 15px 40px; font-size: 1.3em; background-color: #00e5ff; color: #1a1a2e; border: none; border-radius: 5px; cursor: pointer; font-weight: bold; }
+        .execute-button:hover { background-color: #fff; box-shadow: 0 0 15px #00e5ff; }
+        .execute-button:disabled { background-color: #555; color: #999; cursor: not-allowed; }
+    </style>
 </head>
-
-
 <body>
 
     <div class="battle-screen">
-
+        
         <header class="battle-header">
-            <div class="stats-block" id="player-stats">
+            <div class="stats-block" id="player-stats-block">
                 <h2>Player Hero</h2>
-                <p>HP: 70 / 100</p>
-                <div class="stat-bar">
-                    <div class="hp-bar"></div>
-                </div>
-                <p>AP: 6 / 6</p>
-                <div class="stat-bar">
-                    <div class="ap-bar"></div>
-                </div>
-                <p>ATK: 60</p>
+                <p id="player-hp-text">HP: 400 / 400</p>
+                <div class="stat-bar"><div class="hp-bar" id="player-hp-bar"></div></div>
+                <p id="player-ap-text">AP: 8 / 8</p>
+                <div class="stat-bar"><div class="ap-bar" id="player-ap-bar"></div></div>
             </div>
-
-            <div class="stats-block" id="enemy-stats">
-                <h2>Enemy AI</h2>
-                <p>HP: 85 / 120</p>
-                <div class="stat-bar">
-                    <div class="hp-bar enemy-hp"></div>
-                </div>
-                <p>AP: 4 / 6</p>
-                <div class="stat-bar">
-                    <div class="ap-bar enemy-ap"></div>
-                </div>
-                <p>ATK: 40</p>
+            
+            <div class="stats-block" id="enemy-stats-block">
+                <h2>Enemy AI (L1)</h2>
+                <p id="enemy-hp-text">HP: 300 / 300</p>
+                <div class="stat-bar"><div class="hp-bar" id="enemy-hp-bar"></div></div>
+                <p id="enemy-ap-text">AP: 8 / 8</p>
+                <div class="stat-bar"><div class="ap-bar" id="enemy-ap-bar"></div></div>
             </div>
         </header>
 
         <main class="battle-main">
-
+            <aside class="action-palette">
+                <button class="action-block" data-action="ATTACK" draggable="true"><span>⚔️</span> ATTACK (2)</button>
+                <button class="action-block" data-action="CHARGE" draggable="true"><span>⚡</span> CHARGE (1)</button>
+                <button class="action-block" data-action="HEAL" draggable="true"><span>✚</span> HEAL (4)</button>
+                <button class="action-block" data-action="DEFEND" draggable="true"><span>🛡️</span> DEFEND (2)</button>
+                <button class="action-block" data-action="COUNTER" draggable="true"><span>🔄</span> COUNTER (3)</button>
+                <button class="action-block action-if" data-action="IF" draggable="true"><span>IF</span></button>
+                <button class="action-block action-for" data-action="FOR" draggable="true"><span>FOR</span></button>
             </aside>
 
             <div class="center-area">
-
                 <div class="character-area">
                     <div class="character-sprite">[Player Sprite]</div>
                     <div class="vs-graphic">VS</div>
                     <div class="character-sprite">[Enemy Sprite]</div>
                 </div>
 
-                <div class="battle-log">
-                    <p>Turn 1: <span class="player-action">Player uses CHARGE. ATK UP (3 Turns).</span></p>
-                    <p>Turn 1: <span class="enemy-action">Enemy uses ATTACK. Player receives 15 damage.</span></p>
-                    <p>Turn 2: <span class="player-action">Player uses ATTACK. Enemy receives 30 damage.</span></p>
+                <div class="battle-log" id="battle-log">
+                    <p class="system-message">System ready. Drag 4 actions to the slots.</p>
                 </div>
 
                 <div class="program-slots">
-                    <div class="slot">
-                        <h3>1st Action</h3>
-                        <div class="drop-zone">
-                            <div class="logic-block if-block">
-                                <span>IF [ HP < 40 ] THEN</span>
-                                        <div class="logic-block heal-block"><span>✚</span> HEAL</div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="slot">
-                        <h3>2nd Action</h3>
-                        <div class="drop-zone">
-                            <div class="logic-block for-block">
-                                <span>FOR 2 TIMES</span>
-                                <div class="logic-block attack-block"><span>⚔️</span> ATTACK</div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="slot">
-                        <h3>3rd Action</h3>
-                        <div class="drop-zone">
-                            <div class="logic-block counter-block"><span>🔄</span> COUNTER</div>
-                        </div>
-                    </div>
+                    <div class="slot" id="slot-1"><div class="drop-zone" data-slot-id="1">[1st Action]</div></div>
+                    <div class="slot" id="slot-2"><div class="drop-zone" data-slot-id="2">[2nd Action]</div></div>
+                    <div class="slot" id="slot-3"><div class="drop-zone" data-slot-id="3">[3rd Action]</div></div>
+                    <div class="slot" id="slot-4"><div class="drop-zone" data-slot-id="4">[4th Action]</div></div>
                 </div>
-
             </div>
 
             <aside class="info-sidebar">
-                <h3>Enemy Prediction</h3>
-                <p>Enemy AP: 4</p>
-                <p>Predicted Action: ATTACK or DEFEND</p>
-                <hr>
                 <h3>Player Buffs</h3>
-                <ul class="buff-list">
-                    <li>ATK UP (+10) - 2 Turns remaining</li>
+                <ul class="buff-list" id="player-buff-list">
+                    <li>(No active buffs)</li>
+                </ul>
+                <h3>Enemy Buffs</h3>
+                <ul class="buff-list" id="enemy-buff-list">
+                    <li>(No active buffs)</li>
                 </ul>
             </aside>
-
         </main>
 
         <footer class="battle-footer">
             <button class="execute-button" id="execute-turn">EXECUTE TURN</button>
         </footer>
-
     </div>
 
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+
+            // --- 1. 内部データ (ゲームステート) ---
+            const logicSlots = { "1": null, "2": null, "3": null, "4": null };
+            let isBattleOver = false;
+
+            const player = {
+                maxHp: 400,
+                currentHp: 400,
+                attack: 70, // (初期50 + 自由50のうち20と仮定)
+                speed: 70, // (初期50 + 自由50のうち20と仮定)
+                maxAp: 8,
+                currentAp: 8,
+                chargeTurns: 0,
+                isDefending: false,
+                isCountering: false
+            };
+            
+            // L1 敵 (合計300P)
+            const enemy = {
+                maxHp: 300,
+                currentHp: 300,
+                attack: 100, 
+                speed: 60,
+                maxAp: 8,
+                currentAp: 8,
+                chargeTurns: 0,
+                isDefending: false,
+                isCountering: false
+            };
+
+            // アクションのコストと効果
+            const ACTIONS = {
+                "ATTACK": { cost: 2, bonus: 10 },
+                "CHARGE": { cost: 1, percent: 0.20, turns: 3 },
+                "HEAL": { cost: 4, amount: 100 },
+                "DEFEND": { cost: 2, reduction: 0.80 },
+                "COUNTER": { cost: 3, multiplier: 1.5, penalty: 0.20 }
+                // CLEANSE と状態異常は簡略化のため省略
+            };
+            
+            const MAX_AP = 8;
+            const AP_RECOVERY = 4;
+
+            // --- 2. HTML要素の取得 ---
+            const executeButton = document.getElementById('execute-turn');
+            const actionPaletteButtons = document.querySelectorAll('.action-palette .action-block');
+            const dropZones = document.querySelectorAll('.drop-zone');
+            const battleLog = document.getElementById('battle-log');
+            
+            // UI更新用
+            const playerHpText = document.getElementById('player-hp-text');
+            const playerHpBar = document.getElementById('player-hp-bar');
+            const playerApText = document.getElementById('player-ap-text');
+            const playerApBar = document.getElementById('player-ap-bar');
+            const enemyHpText = document.getElementById('enemy-hp-text');
+            const enemyHpBar = document.getElementById('enemy-hp-bar');
+            const enemyApText = document.getElementById('enemy-ap-text');
+            const enemyApBar = document.getElementById('enemy-ap-bar');
+            const playerBuffList = document.getElementById('player-buff-list');
+
+            // --- 3. 補助関数 ---
+            function logToScreen(message, type = 'system') {
+                if (!battleLog) return;
+                const p = document.createElement('p');
+                p.textContent = message;
+                p.className = `${type}-message`; // CSSクラスを適用
+                battleLog.appendChild(p);
+                battleLog.scrollTop = battleLog.scrollHeight;
+            }
+
+            // UI更新関数
+            function updateUI() {
+                // Player
+                player.currentHp = Math.max(0, player.currentHp);
+                playerHpText.textContent = `HP: ${player.currentHp} / ${player.maxHp}`;
+                playerHpBar.style.width = `${(player.currentHp / player.maxHp) * 100}%`;
+                playerApText.textContent = `AP: ${player.currentAp} / ${player.maxAp}`;
+                playerApBar.style.width = `${(player.currentAp / player.maxAp) * 100}%`;
+
+                // Enemy
+                enemy.currentHp = Math.max(0, enemy.currentHp);
+                enemyHpText.textContent = `HP: ${enemy.currentHp} / ${enemy.maxHp}`;
+                enemyHpBar.style.width = `${(enemy.currentHp / enemy.maxHp) * 100}%`;
+                enemyApText.textContent = `AP: ${enemy.currentAp} / ${enemy.maxAp}`;
+                enemyApBar.style.width = `${(enemy.currentAp / enemy.maxAp) * 100}%`;
+                
+                // Buffs
+                playerBuffList.innerHTML = ''; // リセット
+                if (player.chargeTurns > 0) {
+                    playerBuffList.innerHTML = `<li>ATK UP - ${player.chargeTurns} Turns remaining</li>`;
+                } else {
+                    playerBuffList.innerHTML = `<li>(No active buffs)</li>`;
+                }
+            }
+
+            // スロットリセット関数
+            function resetSlots() {
+                dropZones.forEach(zone => {
+                    zone.innerHTML = `[${zone.dataset.slotId}st Action]`;
+                    logicSlots[zone.dataset.slotId] = null;
+                });
+            }
+
+            // --- 4. ドラッグ＆ドロップロジック ---
+            actionPaletteButtons.forEach(block => {
+                block.addEventListener('dragstart', (e) => {
+                    e.dataTransfer.setData('text/plain', block.dataset.action);
+                    block.classList.add('dragging');
+                });
+                block.addEventListener('dragend', () => block.classList.remove('dragging'));
+            });
+
+            dropZones.forEach(zone => {
+                zone.addEventListener('dragover', (e) => { e.preventDefault(); zone.classList.add('drag-over'); });
+                zone.addEventListener('dragleave', () => zone.classList.remove('drag-over'));
+                zone.addEventListener('drop', (e) => {
+                    e.preventDefault();
+                    zone.classList.remove('drag-over');
+                    const actionName = e.dataTransfer.getData('text/plain');
+                    const slotId = zone.dataset.slotId;
+                    logicSlots[slotId] = actionName; // 内部データ更新
+                    
+                    // UI更新
+                    zone.innerHTML = '';
+                    const droppedBlock = document.createElement('div');
+                    let styleClass = actionName.toLowerCase() + '-block';
+                    droppedBlock.className = `dropped-block ${styleClass}`;
+                    droppedBlock.textContent = actionName;
+                    zone.appendChild(droppedBlock);
+                });
+            });
+
+            // --- 5. 敵AIロジック (L1 攻撃型) ---
+            function getEnemyAction() {
+                // L1 攻撃型: シンプルなロジック
+                if (enemy.currentHp < enemy.maxHp * 0.5 && enemy.currentAp >= ACTIONS.HEAL.cost) {
+                    return "HEAL"; // HPが50%未満なら回復
+                }
+                if (enemy.currentAp >= ACTIONS.ATTACK.cost) {
+                    return "ATTACK"; // それ以外は攻撃
+                }
+                return "CHARGE"; // APが足りなければチャージ
+            }
+
+            // --- 6. 実行ボタン (メインゲームループ) ---
+            executeButton.addEventListener('click', async () => {
+                if (isBattleOver) {
+                    alert("Battle is over. Please refresh to restart.");
+                    return;
+                }
+
+                // 4つのスロットが埋まっているかチェック
+                if (Object.values(logicSlots).some(action => action === null)) {
+                    alert("Please fill all 4 action slots before executing.");
+                    return;
+                }
+
+                executeButton.disabled = true;
+                logToScreen("--- TURN START ---", 'system');
+
+                // 4回行動ループ
+                for (let i = 1; i <= 4; i++) {
+                    if (isBattleOver) break;
+
+                    const playerAction = logicSlots[i];
+                    const enemyAction = getEnemyAction(); // AIが行動を決定
+
+                    // 行動順判定 (Speed)
+                    const playerGoesFirst = player.speed >= enemy.speed;
+                    
+                    const actionsInOrder = playerGoesFirst 
+                        ? [{ actor: player, action: playerAction, target: enemy, name: "Player" },
+                           { actor: enemy, action: enemyAction, target: player, name: "Enemy" }]
+                        : [{ actor: enemy, action: enemyAction, target: player, name: "Enemy" },
+                           { actor: player, action: playerAction, target: enemy, name: "Player" }];
+
+                    // アクションの実行（2回：プレイヤーと敵）
+                    for (const turn of actionsInOrder) {
+                        if (isBattleOver) break;
+                        await processAction(turn.actor, turn.target, turn.action, turn.name);
+                    }
+                }
+
+                if (!isBattleOver) {
+                    // ターン終了処理
+                    endTurn();
+                    logToScreen("--- WAITING FOR NEXT 4 ACTIONS ---", 'system');
+                    executeButton.disabled = false;
+                    resetSlots();
+                }
+            });
+
+            // --- 7. アクション実行ロジック (詳細) ---
+            async function processAction(actor, target, action, actorName) {
+                // 簡易的な待機時間 (アニメーションの代わり)
+                await new Promise(resolve => setTimeout(resolve, 300));
+                
+                if (actor.currentHp <= 0) return; // すでに倒されている
+
+                const actionSpec = ACTIONS[action];
+                if (!actionSpec) {
+                    logToScreen(`${actorName} skipped action.`, 'system');
+                    return;
+                }
+
+                // APコストチェック
+                if (actor.currentAp < actionSpec.cost) {
+                    logToScreen(`${actorName} failed ${action} (Not enough AP)`, 'system');
+                    return;
+                }
+                actor.currentAp -= actionSpec.cost;
+
+                // アクション実行
+                switch(action) {
+                    case "ATTACK":
+                        let damage = actor.attack + actionSpec.bonus;
+                        if (actor.chargeTurns > 0) {
+                            damage *= (1 + ACTIONS.CHARGE.percent);
+                        }
+                        damage = Math.floor(damage);
+                        
+                        // 相手の防御・カウンター判定
+                        if (target.isDefending) {
+                            damage = Math.floor(damage * (1 - ACTIONS.DEFEND.reduction)); // 80%軽減
+                            logToScreen(`${target.name} DEFENDED!`, 'system');
+                        } else if (target.isCountering) {
+                            const counterDamage = Math.floor(damage * ACTIONS.COUNTER.multiplier);
+                            actor.currentHp -= counterDamage;
+                            logToScreen(`${target.name} COUNTERED! ${actorName} takes ${counterDamage} damage!`, 'enemy-action');
+                            damage = 0; // ダメージ無効
+                        }
+                        
+                        target.currentHp -= damage;
+                        logToScreen(`${actorName} used ${action}, dealing ${damage} damage.`, actorName === 'Player' ? 'player' : 'enemy');
+                        break;
+                    
+                    case "CHARGE":
+                        actor.chargeTurns = actionSpec.turns;
+                        logToScreen(`${actorName} used ${action}. ATK UP for 3 turns.`, actorName === 'Player' ? 'player' : 'enemy');
+                        break;
+                        
+                    case "HEAL":
+                        actor.currentHp = Math.min(actor.maxHp, actor.currentHp + actionSpec.amount);
+                        logToScreen(`${actorName} used ${action}, healing ${actionSpec.amount} HP.`, actorName === 'Player' ? 'player' : 'enemy');
+                        break;
+                        
+                    case "DEFEND":
+                        actor.isDefending = true; // 次の攻撃に備える
+                        logToScreen(`${actorName} used ${action}.`, actorName === 'Player' ? 'player' : 'enemy');
+                        break;
+                    
+                    case "COUNTER":
+                        actor.isCountering = true; // 次の攻撃に備える
+                        logToScreen(`${actorName} used ${action}.`, actorName === 'Player' ? 'player' : 'enemy');
+                        break;
+                }
+                
+                // アクション実行後にフラグをリセット
+                if (actorName === 'Player') {
+                    enemy.isDefending = false;
+                    enemy.isCountering = false;
+                } else {
+                    player.isDefending = false;
+                    player.isCountering = false;
+                }
+
+                updateUI();
+                checkWinCondition();
+            }
+            
+            // --- 8. ターン終了処理 ---
+            function endTurn() {
+                // AP回復
+                player.currentAp = Math.min(MAX_AP, player.currentAp + AP_RECOVERY);
+                enemy.currentAp = Math.min(MAX_AP, enemy.currentAp + AP_RECOVERY);
+                
+                // バフターン減少
+                if (player.chargeTurns > 0) player.chargeTurns--;
+                if (enemy.chargeTurns > 0) enemy.chargeTurns--;
+                
+                updateUI();
+            }
+
+            // --- 9. 勝敗判定 ---
+            function checkWinCondition() {
+                if (enemy.currentHp <= 0) {
+                    logToScreen("--- YOU WIN! ---", 'system');
+                    isBattleOver = true;
+                    executeButton.disabled = true;
+                } else if (player.currentHp <= 0) {
+                    logToScreen("--- YOU LOSE... ---", 'enemy-action');
+                    isBattleOver = true;
+                    executeButton.disabled = true;
+                }
+            }
+
+            // 初期UI更新
+            updateUI();
+        });
+    </script>
+
 </body>
-
-
 </html>
