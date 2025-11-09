@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Battle Screen (Working Demo)</title>
+    <title>Battle Screen (Step-by-Step Demo)</title>
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&family=Press+Start+2P&display=swap" rel="stylesheet">
     
     <style>
@@ -21,8 +21,6 @@
         .action-block { padding: 15px 10px; font-size: 1em; font-weight: bold; background-color: #3b4b6b; border: 2px solid #5a6b8b; color: #fff; border-radius: 5px; cursor: move; text-align: left; display: flex; align-items: center; gap: 10px; transition: background-color 0.2s, border-color 0.2s, opacity 0.2s; }
         .action-block:hover { background-color: #4c5d7e; border-color: #00e5ff; }
         .action-block span { font-size: 1.2em; }
-        .action-if { background-color: #b3a400; }
-        .action-for { background-color: #008a1a; }
         .dragging { opacity: 0.5; border-style: dashed; }
         .center-area { flex-basis: 60%; display: flex; flex-direction: column; gap: 15px; }
         .character-area { display: flex; justify-content: space-around; align-items: center; padding: 10px; background: rgba(0, 0, 0, 0.2); border-radius: 8px; }
@@ -44,16 +42,56 @@
         .heal-block { background-color: #006ddb; }
         .defend-block { background-color: #005a8a; }
         .counter-block { background-color: #8a00b3; }
-        .if-block { background-color: #b3a400; }
-        .for-block { background-color: #008a1a; }
+        .focus-block { background-color: #ffffff; color: #1a1a2e; }
+        .cleanse-block { background-color: #4dfc00; color: #1a1a2e; }
         .info-sidebar { flex-basis: 25%; padding: 15px; background-color: rgba(0, 0, 0, 0.3); border-radius: 8px; border: 1px solid #445; }
         .info-sidebar h3 { margin: 0 0 10px; color: #00e5ff; font-family: 'Press Start 2P', cursive; font-size: 14px; }
         .buff-list { list-style: none; padding: 0; }
         .buff-list li { background: #3b4b6b; padding: 8px; border-radius: 4px; margin-bottom: 5px; }
+        .debuff { background: #b32d00; color: white; }
         .battle-footer { text-align: center; padding: 20px; background-color: rgba(0, 0, 0, 0.3); border-top: 1px solid #00e5ff; }
         .execute-button { padding: 15px 40px; font-size: 1.3em; background-color: #00e5ff; color: #1a1a2e; border: none; border-radius: 5px; cursor: pointer; font-weight: bold; }
         .execute-button:hover { background-color: #fff; box-shadow: 0 0 15px #00e5ff; }
         .execute-button:disabled { background-color: #555; color: #999; cursor: not-allowed; }
+
+        /* --- ★ ポップアップモーダルのスタイル ★ --- */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.7);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+        }
+        .modal-content {
+            background-color: #1f2a40;
+            border: 2px solid #00e5ff;
+            border-radius: 10px;
+            padding: 30px;
+            width: 80%;
+            max-width: 500px;
+            text-align: center;
+            box-shadow: 0 0 20px rgba(0, 229, 255, 0.5);
+        }
+        .modal-content p {
+            font-size: 1.2em;
+            margin: 0 0 20px;
+            line-height: 1.6;
+        }
+        .modal-button {
+            padding: 10px 30px;
+            font-size: 1em;
+            background-color: #00e5ff;
+            color: #1a1a2e;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: bold;
+        }
     </style>
 </head>
 <body>
@@ -64,17 +102,17 @@
             <div class="stats-block" id="player-stats-block">
                 <h2>Player Hero</h2>
                 <p id="player-hp-text">HP: 400 / 400</p>
-                <div class="stat-bar"><div class="hp-bar" id="player-hp-bar"></div></div>
+                <div class="stat-bar"><div class="hp-bar" id="player-hp-bar" style="width: 100%;"></div></div>
                 <p id="player-ap-text">AP: 8 / 8</p>
-                <div class="stat-bar"><div class="ap-bar" id="player-ap-bar"></div></div>
+                <div class="stat-bar"><div class="ap-bar" id="player-ap-bar" style="width: 100%;"></div></div>
             </div>
             
             <div class="stats-block" id="enemy-stats-block">
                 <h2>Enemy AI (L1)</h2>
                 <p id="enemy-hp-text">HP: 300 / 300</p>
-                <div class="stat-bar"><div class="hp-bar" id="enemy-hp-bar"></div></div>
+                <div class="stat-bar"><div class="hp-bar" id="enemy-hp-bar" style="width: 100%;"></div></div>
                 <p id="enemy-ap-text">AP: 8 / 8</p>
-                <div class="stat-bar"><div class="ap-bar" id="enemy-ap-bar"></div></div>
+                <div class="stat-bar"><div class="ap-bar" id="enemy-ap-bar" style="width: 100%;"></div></div>
             </div>
         </header>
 
@@ -85,8 +123,8 @@
                 <button class="action-block" data-action="HEAL" draggable="true"><span>✚</span> HEAL (4)</button>
                 <button class="action-block" data-action="DEFEND" draggable="true"><span>🛡️</span> DEFEND (2)</button>
                 <button class="action-block" data-action="COUNTER" draggable="true"><span>🔄</span> COUNTER (3)</button>
-                <button class="action-block action-if" data-action="IF" draggable="true"><span>IF</span></button>
-                <button class="action-block action-for" data-action="FOR" draggable="true"><span>FOR</span></button>
+                <button class="action-block cleanse-block" data-action="CLEANSE" draggable="true"><span>✨</span> CLEANSE (4)</button>
+                <button class="action-block focus-block" data-action="FOCUS" draggable="true"><span>🧘</span> FOCUS (0)</button>
             </aside>
 
             <div class="center-area">
@@ -109,13 +147,13 @@
             </div>
 
             <aside class="info-sidebar">
-                <h3>Player Buffs</h3>
+                <h3>Player Buffs/Debuffs</h3>
                 <ul class="buff-list" id="player-buff-list">
-                    <li>(No active buffs)</li>
+                    <li>(No active effects)</li>
                 </ul>
-                <h3>Enemy Buffs</h3>
+                <h3>Enemy Buffs/Debuffs</h3>
                 <ul class="buff-list" id="enemy-buff-list">
-                    <li>(No active buffs)</li>
+                    <li>(No active effects)</li>
                 </ul>
             </aside>
         </main>
@@ -133,19 +171,22 @@
             let isBattleOver = false;
 
             const player = {
+                name: "Player",
                 maxHp: 400,
                 currentHp: 400,
-                attack: 70, // (初期50 + 自由50のうち20と仮定)
-                speed: 70, // (初期50 + 自由50のうち20と仮定)
+                attack: 70,
+                speed: 70,
                 maxAp: 8,
                 currentAp: 8,
                 chargeTurns: 0,
                 isDefending: false,
-                isCountering: false
+                isCountering: false,
+                isPoisoned: true, // デモ用に最初からPoisoned
+                isStunned: false
             };
             
-            // L1 敵 (合計300P)
             const enemy = {
+                name: "Enemy L1",
                 maxHp: 300,
                 currentHp: 300,
                 attack: 100, 
@@ -154,17 +195,19 @@
                 currentAp: 8,
                 chargeTurns: 0,
                 isDefending: false,
-                isCountering: false
+                isCountering: false,
+                isPoisoned: false,
+                isStunned: false
             };
 
-            // アクションのコストと効果
             const ACTIONS = {
                 "ATTACK": { cost: 2, bonus: 10 },
                 "CHARGE": { cost: 1, percent: 0.20, turns: 3 },
                 "HEAL": { cost: 4, amount: 100 },
                 "DEFEND": { cost: 2, reduction: 0.80 },
-                "COUNTER": { cost: 3, multiplier: 1.5, penalty: 0.20 }
-                // CLEANSE と状態異常は簡略化のため省略
+                "COUNTER": { cost: 3, multiplier: 1.5, penalty: 0.20 },
+                "CLEANSE": { cost: 4 },
+                "FOCUS": { cost: 0, amount: 4 }
             };
             
             const MAX_AP = 8;
@@ -175,8 +218,6 @@
             const actionPaletteButtons = document.querySelectorAll('.action-palette .action-block');
             const dropZones = document.querySelectorAll('.drop-zone');
             const battleLog = document.getElementById('battle-log');
-            
-            // UI更新用
             const playerHpText = document.getElementById('player-hp-text');
             const playerHpBar = document.getElementById('player-hp-bar');
             const playerApText = document.getElementById('player-ap-text');
@@ -188,41 +229,80 @@
             const playerBuffList = document.getElementById('player-buff-list');
 
             // --- 3. 補助関数 ---
+            
+            /**
+             * ★ 新機能：ポップアップ（モーダル）表示関数 ★
+             * @param {string} message - ポップアップに表示するメッセージ
+             * @returns {Promise<void>} - ユーザーが "OK" を押すと解決するPromise
+             */
+            function showActionPopup(message) {
+                // Promiseを返し、"OK"が押されるまで await で待機させる
+                return new Promise(resolve => {
+                    // オーバーレイを作成
+                    const overlay = document.createElement('div');
+                    overlay.className = 'modal-overlay';
+
+                    // モーダルコンテンツを作成
+                    const modal = document.createElement('div');
+                    modal.className = 'modal-content';
+                    
+                    const text = document.createElement('p');
+                    text.innerHTML = message; // HTMLタグを許可
+                    
+                    const okButton = document.createElement('button');
+                    okButton.className = 'modal-button';
+                    okButton.textContent = 'OK';
+
+                    modal.appendChild(text);
+                    modal.appendChild(okButton);
+                    overlay.appendChild(modal);
+                    document.body.appendChild(overlay);
+
+                    // "OK" ボタンが押されたら...
+                    okButton.onclick = () => {
+                        document.body.removeChild(overlay); // モーダルを削除
+                        resolve(); // Promiseを解決してゲームループを再開
+                    };
+                });
+            }
+            
             function logToScreen(message, type = 'system') {
                 if (!battleLog) return;
                 const p = document.createElement('p');
                 p.textContent = message;
-                p.className = `${type}-message`; // CSSクラスを適用
+                p.className = `${type}-message`;
                 battleLog.appendChild(p);
                 battleLog.scrollTop = battleLog.scrollHeight;
             }
 
-            // UI更新関数
             function updateUI() {
-                // Player
                 player.currentHp = Math.max(0, player.currentHp);
                 playerHpText.textContent = `HP: ${player.currentHp} / ${player.maxHp}`;
                 playerHpBar.style.width = `${(player.currentHp / player.maxHp) * 100}%`;
                 playerApText.textContent = `AP: ${player.currentAp} / ${player.maxAp}`;
                 playerApBar.style.width = `${(player.currentAp / player.maxAp) * 100}%`;
 
-                // Enemy
                 enemy.currentHp = Math.max(0, enemy.currentHp);
                 enemyHpText.textContent = `HP: ${enemy.currentHp} / ${enemy.maxHp}`;
                 enemyHpBar.style.width = `${(enemy.currentHp / enemy.maxHp) * 100}%`;
                 enemyApText.textContent = `AP: ${enemy.currentAp} / ${enemy.maxAp}`;
                 enemyApBar.style.width = `${(enemy.currentAp / enemy.maxAp) * 100}%`;
                 
-                // Buffs
-                playerBuffList.innerHTML = ''; // リセット
+                playerBuffList.innerHTML = ''; 
                 if (player.chargeTurns > 0) {
-                    playerBuffList.innerHTML = `<li>ATK UP - ${player.chargeTurns} Turns remaining</li>`;
-                } else {
-                    playerBuffList.innerHTML = `<li>(No active buffs)</li>`;
+                    playerBuffList.innerHTML += `<li>ATK UP - ${player.chargeTurns} Turns remaining</li>`;
+                }
+                if (player.isPoisoned) {
+                    playerBuffList.innerHTML += `<li class="debuff">POISONED</li>`;
+                }
+                if (player.isStunned) {
+                    playerBuffList.innerHTML += `<li class="debuff">STUNNED</li>`;
+                }
+                if (!playerBuffList.innerHTML) {
+                    playerBuffList.innerHTML = `<li>(No active effects)</li>`;
                 }
             }
 
-            // スロットリセット関数
             function resetSlots() {
                 dropZones.forEach(zone => {
                     zone.innerHTML = `[${zone.dataset.slotId}st Action]`;
@@ -247,9 +327,8 @@
                     zone.classList.remove('drag-over');
                     const actionName = e.dataTransfer.getData('text/plain');
                     const slotId = zone.dataset.slotId;
-                    logicSlots[slotId] = actionName; // 内部データ更新
+                    logicSlots[slotId] = actionName; 
                     
-                    // UI更新
                     zone.innerHTML = '';
                     const droppedBlock = document.createElement('div');
                     let styleClass = actionName.toLowerCase() + '-block';
@@ -261,14 +340,13 @@
 
             // --- 5. 敵AIロジック (L1 攻撃型) ---
             function getEnemyAction() {
-                // L1 攻撃型: シンプルなロジック
                 if (enemy.currentHp < enemy.maxHp * 0.5 && enemy.currentAp >= ACTIONS.HEAL.cost) {
-                    return "HEAL"; // HPが50%未満なら回復
+                    return "HEAL"; 
                 }
                 if (enemy.currentAp >= ACTIONS.ATTACK.cost) {
-                    return "ATTACK"; // それ以外は攻撃
+                    return "ATTACK"; 
                 }
-                return "CHARGE"; // APが足りなければチャージ
+                return "FOCUS";
             }
 
             // --- 6. 実行ボタン (メインゲームループ) ---
@@ -277,8 +355,6 @@
                     alert("Battle is over. Please refresh to restart.");
                     return;
                 }
-
-                // 4つのスロットが埋まっているかチェック
                 if (Object.values(logicSlots).some(action => action === null)) {
                     alert("Please fill all 4 action slots before executing.");
                     return;
@@ -292,9 +368,8 @@
                     if (isBattleOver) break;
 
                     const playerAction = logicSlots[i];
-                    const enemyAction = getEnemyAction(); // AIが行動を決定
+                    const enemyAction = getEnemyAction(); 
 
-                    // 行動順判定 (Speed)
                     const playerGoesFirst = player.speed >= enemy.speed;
                     
                     const actionsInOrder = playerGoesFirst 
@@ -306,13 +381,13 @@
                     // アクションの実行（2回：プレイヤーと敵）
                     for (const turn of actionsInOrder) {
                         if (isBattleOver) break;
+                        // ★ 変更点：processActionが完了する（ポップアップが押される）まで待機
                         await processAction(turn.actor, turn.target, turn.action, turn.name);
                     }
                 }
 
                 if (!isBattleOver) {
-                    // ターン終了処理
-                    endTurn();
+                    await endTurn(); // ターン終了処理もポップアップを出すため待機
                     logToScreen("--- WAITING FOR NEXT 4 ACTIONS ---", 'system');
                     executeButton.disabled = false;
                     resetSlots();
@@ -321,24 +396,30 @@
 
             // --- 7. アクション実行ロジック (詳細) ---
             async function processAction(actor, target, action, actorName) {
-                // 簡易的な待機時間 (アニメーションの代わり)
-                await new Promise(resolve => setTimeout(resolve, 300));
-                
-                if (actor.currentHp <= 0) return; // すでに倒されている
+                if (actor.currentHp <= 0) return; 
 
-                const actionSpec = ACTIONS[action];
-                if (!actionSpec) {
-                    logToScreen(`${actorName} skipped action.`, 'system');
+                // STUNチェック
+                if (actor.isStunned) {
+                    actor.isStunned = false; // 麻痺は1ターンで解除
+                    updateUI();
+                    await showActionPopup(`<strong>${actorName} is STUNNED</strong> and cannot act!`);
                     return;
                 }
 
-                // APコストチェック
+                const actionSpec = ACTIONS[action];
+                if (!actionSpec) {
+                    await showActionPopup(`${actorName} skipped action.`);
+                    return;
+                }
+
                 if (actor.currentAp < actionSpec.cost) {
-                    logToScreen(`${actorName} failed ${action} (Not enough AP)`, 'system');
+                    await showActionPopup(`${actorName} failed ${action} (Not enough AP)`);
                     return;
                 }
                 actor.currentAp -= actionSpec.cost;
 
+                let logMessage = `<strong>${actorName}</strong> used <strong>${action}</strong>. `;
+                
                 // アクション実行
                 switch(action) {
                     case "ATTACK":
@@ -348,43 +429,60 @@
                         }
                         damage = Math.floor(damage);
                         
-                        // 相手の防御・カウンター判定
                         if (target.isDefending) {
-                            damage = Math.floor(damage * (1 - ACTIONS.DEFEND.reduction)); // 80%軽減
-                            logToScreen(`${target.name} DEFENDED!`, 'system');
+                            damage = Math.floor(damage * (1 - ACTIONS.DEFEND.reduction)); 
+                            logMessage += `${target.name} DEFENDED! `;
                         } else if (target.isCountering) {
                             const counterDamage = Math.floor(damage * ACTIONS.COUNTER.multiplier);
                             actor.currentHp -= counterDamage;
-                            logToScreen(`${target.name} COUNTERED! ${actorName} takes ${counterDamage} damage!`, 'enemy-action');
-                            damage = 0; // ダメージ無効
+                            logMessage += `${target.name} COUNTERED! ${actorName} takes ${counterDamage} damage! `;
+                            damage = 0;
                         }
                         
                         target.currentHp -= damage;
-                        logToScreen(`${actorName} used ${action}, dealing ${damage} damage.`, actorName === 'Player' ? 'player' : 'enemy');
+                        logMessage += `Dealt ${damage} damage.`;
                         break;
                     
                     case "CHARGE":
                         actor.chargeTurns = actionSpec.turns;
-                        logToScreen(`${actorName} used ${action}. ATK UP for 3 turns.`, actorName === 'Player' ? 'player' : 'enemy');
+                        logMessage += `ATK UP for 3 turns.`;
                         break;
                         
                     case "HEAL":
                         actor.currentHp = Math.min(actor.maxHp, actor.currentHp + actionSpec.amount);
-                        logToScreen(`${actorName} used ${action}, healing ${actionSpec.amount} HP.`, actorName === 'Player' ? 'player' : 'enemy');
+                        logMessage += `Healed ${actionSpec.amount} HP.`;
                         break;
                         
                     case "DEFEND":
-                        actor.isDefending = true; // 次の攻撃に備える
-                        logToScreen(`${actorName} used ${action}.`, actorName === 'Player' ? 'player' : 'enemy');
+                        actor.isDefending = true; 
+                        logMessage += `Prepares to defend.`;
                         break;
                     
                     case "COUNTER":
-                        actor.isCountering = true; // 次の攻撃に備える
-                        logToScreen(`${actorName} used ${action}.`, actorName === 'Player' ? 'player' : 'enemy');
+                        actor.isCountering = true;
+                        // 失敗時のペナルティは、相手が攻撃しなかった場合に発生
+                        if ((actorName === 'Player' && getEnemyAction() !== 'ATTACK') || 
+                            (actorName === 'Enemy' && logicSlots[Object.keys(logicSlots).find(k => logicSlots[k])] !== 'ATTACK')) { // 簡易的な相手の行動予測
+                             const penalty = Math.floor(actor.maxHp * ACTIONS.COUNTER.penalty);
+                             actor.currentHp -= penalty;
+                             logMessage += `FAILED COUNTER! Takes ${penalty} self-damage.`;
+                        } else {
+                            logMessage += `Prepares to counter.`;
+                        }
+                        break;
+                    
+                    case "CLEANSE":
+                        actor.isPoisoned = false;
+                        actor.isStunned = false;
+                        logMessage += `Status normalized.`;
+                        break;
+                    
+                    case "FOCUS":
+                        actor.currentAp = Math.min(actor.maxAp, actor.currentAp + actionSpec.amount);
+                        logMessage += `Recovered ${actionSpec.amount} AP.`;
                         break;
                 }
                 
-                // アクション実行後にフラグをリセット
                 if (actorName === 'Player') {
                     enemy.isDefending = false;
                     enemy.isCountering = false;
@@ -393,30 +491,51 @@
                     player.isCountering = false;
                 }
 
+                // ★ 変更点：ログをポップアップで表示し、UIを更新
+                await showActionPopup(logMessage);
+                logToScreen(logMessage.replace(/<[^>]*>/g, ''), actorName === 'Player' ? 'player' : 'enemy'); // ログにも記録
                 updateUI();
                 checkWinCondition();
             }
             
             // --- 8. ターン終了処理 ---
-            function endTurn() {
+            async function endTurn() {
+                let turnEndMessage = "--- End of Turn ---<br>";
+                
                 // AP回復
                 player.currentAp = Math.min(MAX_AP, player.currentAp + AP_RECOVERY);
                 enemy.currentAp = Math.min(MAX_AP, enemy.currentAp + AP_RECOVERY);
+                turnEndMessage += `AP recovered (+${AP_RECOVERY}).<br>`;
                 
                 // バフターン減少
                 if (player.chargeTurns > 0) player.chargeTurns--;
                 if (enemy.chargeTurns > 0) enemy.chargeTurns--;
                 
+                // 毒ダメージ
+                if (player.isPoisoned) {
+                    const poisonDmg = Math.floor(player.maxHp * 0.05); // 5%
+                    player.currentHp -= poisonDmg;
+                    turnEndMessage += `Player takes ${poisonDmg} poison damage.<br>`;
+                }
+                
+                await showActionPopup(turnEndMessage); // ターン終了時にもポップアップ
+                logToScreen("Turn ended. AP and effects processed.", "system");
+                
                 updateUI();
+                checkWinCondition();
             }
 
             // --- 9. 勝敗判定 ---
             function checkWinCondition() {
+                if (isBattleOver) return;
+                
                 if (enemy.currentHp <= 0) {
+                    showActionPopup("--- 🎉 YOU WIN! 🎉 ---");
                     logToScreen("--- YOU WIN! ---", 'system');
                     isBattleOver = true;
                     executeButton.disabled = true;
                 } else if (player.currentHp <= 0) {
+                    showActionPopup("--- ☠️ YOU LOSE... ☠️ ---");
                     logToScreen("--- YOU LOSE... ---", 'enemy-action');
                     isBattleOver = true;
                     executeButton.disabled = true;
