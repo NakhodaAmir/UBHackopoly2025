@@ -185,13 +185,13 @@ body {
     align-items: center;
     gap: 8px;
 }
-.if-block { background-color: #b3a400; /* 黄色 */ }
-.for-block { background-color: #008a1a; /* 緑 */ }
+
+
 .attack-block { background-color: #b32d00; /* 赤 */ }
 .charge-block { background-color: #d97400; /* オレンジ */ }
 .heal-block { background-color: #006ddb; /* 青 */ }
 .defend-block { background-color: #005a8a; /* 濃い青 */ }
-.counter-block { background-color: #8a00b3; /* 紫 */ }
+
 
 .if-block .logic-block {
     margin-left: 20px; /* ネスト表現 */
