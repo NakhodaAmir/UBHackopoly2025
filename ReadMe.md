@@ -235,6 +235,15 @@ COUNTER    3 AP    Success: Reflects 1.5 times the damage received. Failure: Tak
 
 CLEANSE　4 AP   Instantly removes all status ailments. Does not restore HP.
 
+ITEMS: 
+- speed potion (make your speed faster by 30%)
+- cleans potion (cleanse all debuff)
+- mini health potion (heals 50)
+- mega health potion (heals 150)
+- AP potion (Replenish 1)
+- spider web (reduces enemy speed by 40% for one turn)
+- spikes reduces enemy speed by 25% for 3 turns
+
 
 
 You can get 4 ap every single turn 
