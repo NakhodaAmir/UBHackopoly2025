@@ -221,3 +221,5 @@ COUNTER    1 AP    Despite the extreme high risk (failure: 20% of max HP damage)
 
 
 CLEANSE　2 AP   Instantly removes all status ailments. Does not restore HP.
+
+You can get 2 ap every single turn 
