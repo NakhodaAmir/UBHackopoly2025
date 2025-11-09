@@ -202,6 +202,20 @@ H:S:A
       vulnerable
    elif hp < 60
       deffend
+1. BOSS atk 200 80 120
+   if (player == defend or player == counter) and status != charge:
+      charge
+   elif player == vulnerable or player == poison or player ==  stun:
+      attack
+   else:
+      random(stun, poison, vulnerable, attack)
+1. BOSS atk 250 80 70
+   if hp > 150:
+      random(stun, poison, vulnerable)
+   elif hp > 100:
+      attack
+   elif hp < 100:
+      heal
 
 STUN　On the next turn, the player will be unable to execute any of their three action slots.(able to counter)
 POISON Lasts for 3 turns. At the start of each turn, you take **5% of your maximum HP** in damage.
