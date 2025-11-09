@@ -155,49 +155,49 @@ ISC
 
 ## Enemy info
 H:S:A
-L1 atk	40	50	60 
-L1 def	60	50	40
-L2 atk	50	60	65	Use Charge
+1.L1 atk	40	50	60
+1.L1 def	60	50	40
+1.L2 atk	50	60	65	Use Charge
    if status != charge:
       charge
    else:
       attack
-L2 def	95	40	40	Use HEAL
+1.L2 def	95	40	40	Use HEAL
    if AP == max:
       deffend
    else:
       attack
-L3 atk	50	80	70	Use Poison
+1.L3 atk	50	80	70	Use Poison
    if player != poison:
       poison
    else:
       attack
-L3 def	70	50	80	Use Vulnerable
+1.L3 def	70	50	80	Use Vulnerable
    if player != vulnerable:
       vulnerable
    else:
       attack
-L4 atk	55	70	100	Use Stun
+1.L4 atk	55	70	100	Use Stun
    if hp < 30:
       defend
    elif:
       Stun every three turn
    else:
       attack
-L4 def	125	50	50	Use HEAL adn DEFEND
+1.L4 def	125	50	50	Use HEAL adn DEFEND
    if hp > 80:
       deffend
    elif hp < 30:
       heal
    else:
       attack
-L5 atk	70	80	100
+1.L5 atk	70	80	100
    if player != diffend:
       charge
       attack
    else:
       stun
-L5 def	110	70	70
+1.L5 def	110	70	70
    if player have any stutus:
       vulnerable
    elif hp < 60
